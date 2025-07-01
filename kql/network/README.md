@@ -4,4 +4,5 @@ This directory contains KQL queries focused on network-related logs in your Azur
 
 ## Files
 
-- **firewall-dns-proxy.kql** - Extract and list Azure Firewall DNS Proxy requests.  
+- **firewall-dns-proxy.kql** - Extract and list Azure Firewall DNS Proxy requests.
+- **vpn-ike-diagnostics.kql** - Parses IKE diagnostic logs to extract VPN session events with remote/local IPs and timestamps.
