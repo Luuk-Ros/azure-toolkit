@@ -39,14 +39,14 @@
 All automation scripts live under `scripts/`, grouped by functional category:
 
     scripts/
-    ├─ networking-dns/      ← VNet peering, subnet & firewall automation
-    ├─ storage/             ← Azure Files AD-DS integration & storage tests
-    ├─ monitoring/          ← Agent installs & Log Analytics purges
-    ├─ governance/          ← Tagging, RBAC/SPN reporting & policy checks
-    ├─ device-management/   ← Windows provisioning, Winget installs & scans
-    └─ utilities/           ← Generic helper functions & data munging
+    ├─ networking/      VNet peering, subnet & firewall automation
+    ├─ storage/             Azure Files AD-DS integration & storage tests
+    ├─ monitoring/          Agent installs & Log Analytics purges
+    ├─ governance/          Tagging, RBAC/SPN reporting & policy checks
+    ├─ device-management/   Windows provisioning, Winget installs & scans
+    └─ utilities/           Generic helper functions & data munging
 
-- **networking-dns/**  
+- **networking/**  
   Automate virtual network links, subnet updates, firewall rule deployments.  
 - **storage/**  
   Deploy and test Azure Files “hybrid” AD authentication (AzFilesHybrid), join storage accounts to AD.  
@@ -66,13 +66,13 @@ All automation scripts live under `scripts/`, grouped by functional category:
 All Kusto Query Language examples live under `kql/`, organized by query domain:
 
     kql/
-    ├─ performance/   ← Ingestion stats, CPU/memory/disk metrics
-    ├─ security/      ← Sign-in & audit logs analytics
-    ├─ network/       ← DNS, NSG flow & firewall diagnostics
-    └─ cost/          ← Usage & cost analysis (time series, pie charts)
+    ├─ data/          Ingestion stats
+    ├─ security/      Sign-in & audit logs analytics
+    ├─ network/       DNS, NSG flow & firewall diagnostics
+    └─ cost/          Usage & cost analysis
 
-- **performance/**  
-  Time-series charts of ingestion volume, top hosts, average CPU/memory.  
+- **data/**  
+  Time-series charts of ingestion volume  
 - **security/**  
   Unique or failed sign-ins, MFA failures, device-based filters.  
 - **network/**  
