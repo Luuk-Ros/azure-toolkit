@@ -1,0 +1,6 @@
+// Failed sign-in attempts in the past 24 hours
+SigninLogs
+| where TimeGenerated >= ago(24h)
+| where ResultType != "0"
+| summarize FailedAttempts = count() by UserPrincipalName, bin(TimeGenerated, 1h)
+| render timechart

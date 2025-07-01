@@ -1,0 +1,6 @@
+// MFA failure events in the last 7 days
+SigninLogs
+| where TimeGenerated >= ago(7d)
+| where ResultType in ("50126", "50140")    // Common MFA error codes
+| summarize MFATriggered = count() by UserPrincipalName
+| order by MFATriggered desc

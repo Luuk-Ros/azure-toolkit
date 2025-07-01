@@ -1,0 +1,6 @@
+// Monthly data ingestion volume per data type
+Usage
+| where TimeGenerated >= startofmonth(now())
+| where IsBillable == true
+| summarize IngestedGB = sum(Quantity) / 1000 by DataType
+| sort by IngestedGB desc

@@ -1,0 +1,5 @@
+Event
+| where TimeGenerated >= startofmonth(now())
+| summarize TotalEventsGB = sum(_BilledSize) / (1024 * 1024 * 1024) by Computer
+| order by TotalEventsGB desc
+| take 10

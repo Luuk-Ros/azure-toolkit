@@ -1,0 +1,5 @@
+// Total cost per Resource Group for the current month
+CostManagementResources
+| where TimeGenerated >= startofmonth(now())
+| summarize TotalCost = sum(PreTaxCost) by ResourceGroup
+| order by TotalCost desc

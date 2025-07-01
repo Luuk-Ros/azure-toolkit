@@ -1,0 +1,9 @@
+// Azure Firewall DNS Proxy logs
+AzureDiagnostics
+| where ResourceType == "AZUREFIREWALLS"
+| where Category == "AzureFirewallDnsProxy"
+| extend Fqdn = extract(@"\sA\sIN\s(\S+)\s", 1, msg_s)
+| extend ClientIP = extract(@"DNS Request: (\S+):\d+", 1, msg_s)
+| where isnotempty(ClientIP)
+| project TimeGenerated, Fqdn, ClientIP, msg_s, ResourceId
+| order by TimeGenerated desc

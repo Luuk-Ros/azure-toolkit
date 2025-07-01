@@ -1,0 +1,6 @@
+Usage
+| where TimeGenerated >= startofmonth(now())
+| where DataType == "Event"
+| summarize TotalIngestedDataGB = sum(Quantity) / 1024 by bin(TimeGenerated, 1d)
+| order by TimeGenerated asc
+| render timechart

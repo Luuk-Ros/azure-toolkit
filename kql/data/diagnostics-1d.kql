@@ -1,0 +1,5 @@
+AzureDiagnostics
+| where TimeGenerated > ago(1d)
+| summarize TotalDiagnosticsGB = sum(_BilledSize) / (1024 * 1024 * 1024) by ResourceId
+| order by TotalDiagnosticsGB desc
+| take 10

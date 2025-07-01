@@ -1,0 +1,12 @@
+// Sign-in logs on Windows devices in the last 30 days
+SigninLogs
+| where TimeGenerated >= ago(30d)
+| where isnotempty(DeviceDetail.displayName)
+| where tolower(DeviceDetail.operatingSystem) contains "windows"
+| extend
+    User        = tostring(UserPrincipalName),
+    DeviceName  = tostring(DeviceDetail.displayName),
+    OS          = tostring(DeviceDetail.operatingSystem),
+    TrustType   = tostring(DeviceDetail.trustType)
+| summarize LatestSignIn = max(TimeGenerated) by User, DeviceName, OS, TrustType
+| order by LatestSignIn desc

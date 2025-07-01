@@ -1,0 +1,5 @@
+// Daily cost trend over the last 30 days
+CostManagementResources
+| where TimeGenerated >= ago(30d)
+| summarize DailyCost = sum(PreTaxCost) by bin(TimeGenerated, 1d)
+| render timechart

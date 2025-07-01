@@ -1,0 +1,14 @@
+// Sign-in logs last 30 days, excluding certain device patterns
+SigninLogs
+| where TimeGenerated >= ago(30d)
+| where isnotempty(DeviceDetail.displayName)
+| where not(tolower(DeviceDetail.displayName) contains "avdp1")
+  and not(tolower(DeviceDetail.displayName) contains "sht")
+  and not(tolower(DeviceDetail.displayName) contains "vm0")
+| extend
+    User        = tostring(UserPrincipalName),
+    DeviceName  = tostring(DeviceDetail.displayName),
+    OS          = tostring(DeviceDetail.operatingSystem),
+    TrustType   = tostring(DeviceDetail.trustType)
+| summarize LatestSignIn = max(TimeGenerated) by User, DeviceName, OS, TrustType
+| order by LatestSignIn desc
