@@ -1,0 +1,19 @@
+let TotalLogsCount=
+    Event
+    | where TimeGenerated > ago(30d)
+    | count;
+let TotalGB=
+    Event
+    | where TimeGenerated > ago(30d)
+    | summarize sum(_BilledSize) / 1.E9;
+Event
+| where TimeGenerated > ago(30d)
+| summarize ResourceLogCount=count(), ResourceGB=sum(_BilledSize) / 1.E9 by _ResourceId
+| extend ResourceName = tostring(split(_ResourceId, "/")[-1])
+| project
+    Resource=ResourceName,
+    ['Log GB']=ResourceGB,
+    ['Percentage by count']=ResourceLogCount * 100 / toscalar(TotalLogsCount),
+    ['Log count']=ResourceLogCount,
+    ['Percentage by size']=ResourceGB * 100 / toscalar(TotalGB)
+| sort by ['Percentage by size'] desc
