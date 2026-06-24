@@ -27,16 +27,16 @@
 
 param (
     [switch]$AllSubscriptions,
-    [string]$SPNObjectId = "103756ff-b4c7-4735-96ef-e2fce8b2c43a" # Replace with your default SPN Object ID
+    [string]$SPNObjectId = "<your-spn-object-id-here>"
 )
 
 # Predefined list of subscription IDs
 $SubscriptionIds = @(
-    "1b1d5253-7f5a-4359-aa8c-f2a8cfc09f67"
+    "<your-subscription-id-here>"
 )
 
 # Log in to Azure
-$TenantId = "29ebd335-b1bc-4b1d-b89b-ea6e27378762" # Replace with your tenant ID
+$TenantId = "<your-tenant-id-here>"
 Connect-AzAccount -TenantId $TenantId -SubscriptionId $SubscriptionIds[0]
 
 # Determine subscriptions to process

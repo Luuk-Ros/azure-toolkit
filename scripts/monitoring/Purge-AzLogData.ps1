@@ -45,8 +45,22 @@ $accessToken = az account get-access-token --resource https://management.azure.c
 # 4) Calculate cutoff timestamp
 $cutoffDate = (Get-Date).AddDays(-$DaysToKeep).ToString("yyyy-MM-ddTHH:mm:ssZ")
 
-# 5) Loop through hostnames and send purge requests
+# 5) Confirm before purging
+Write-Host "`n*** PURGE SUMMARY ***" -ForegroundColor Yellow
+Write-Host "  Workspace : $WorkspaceName" -ForegroundColor Yellow
+Write-Host "  Cutoff    : records older than $cutoffDate will be permanently deleted" -ForegroundColor Yellow
+Write-Host "  Hostnames :" -ForegroundColor Yellow
+$Hostnames | ForEach-Object { Write-Host "    - $_" -ForegroundColor Yellow }
+Write-Host ""
+$confirm = Read-Host "Type 'yes' to proceed with the purge, or anything else to abort"
+if ($confirm -ne "yes") {
+    Write-Host "Purge aborted." -ForegroundColor Red
+    exit
+}
+
+# 6) Loop through hostnames and send purge requests
 foreach ($hostname in $Hostnames) {
+
     Write-Host "*** Purging logs for hostname: $hostname (older than $cutoffDate)..." -ForegroundColor Cyan
 
     $body = @{

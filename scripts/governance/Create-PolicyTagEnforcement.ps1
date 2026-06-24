@@ -43,7 +43,7 @@ $DeploymentTargets = @(
         # PORTAL ZICHTBAAR: Mag spaties en tekst bevatten
         AssignmentDisplayName = "xyz Enforce tag $TagName $TagValue"
         Exclusions            = @(
-            "/subscriptions/c3d2ddea-5b82-4bf6-8c8a-7f46bea626f6/resourceGroups/aur-d1-hub-01"
+            # "<subscription-resource-id>/resourceGroups/<rg-name>"
         )
     },
     @{
