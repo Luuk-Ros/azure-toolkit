@@ -1,56 +1,83 @@
 # Scripts
 
-This directory contains reusable PowerShell (and CLI) scripts to automate common Azure and Windows-related tasks.  Each category lives in its own subfolder for clarity and discoverability.
+This directory contains reusable PowerShell scripts to automate common Azure tasks. Each category lives in its own subfolder for clarity and discoverability.
 
 ## Folder Structure
-``` text
+
+```
 scripts/
-├─ networking/ VNet, DNS & firewall automation
-├─ storage/ Azure Storage account helpers
-├─ monitoring/ Agent installs, log purges & health checks
-├─ governance/ Tagging, RBAC/SPN reporting & policy checks
-├─ device-management/ Windows/Intune/Winget provisioning & scans
-└─ utilities/ Generic helper functions & data munging
+├─ networking/          VNet, DNS & firewall automation
+├─ storage/             Azure Files AD-DS integration & storage helpers
+├─ monitoring/          Log purges & health checks
+├─ governance/          Tagging, RBAC/SPN reporting & policy enforcement
+└─ utilities/           General-purpose helper scripts
 ```
 
 ## Categories
 
-### networking-dns  
-Automate your network infrastructure in Azure:  
-- Virtual Network peering and links  
-- Subnet updates  
-- Firewall rule deployments  
+### networking
 
-### storage  
-Scripts to connect to, join, mount or test Azure Storage accounts.
+Automate Azure network infrastructure:
 
-### monitoring  
-Install or configure monitoring agents (Zabbix, Log Analytics, etc.), purge old log data, and run health-check routines.
+| Script | Description |
+|---|---|
+| `Add-PdnsVnetLink.ps1` | Links one or more VNets to a Private DNS Zone. Supports bulk operations across subscriptions. |
+| `Update-AzVnetSubnet.ps1` | Disables Private Link Service network policies on a specified subnet. |
 
-### governance  
-Enforce tagging standards, report on Service Principal role assignments, and audit policy compliance.
+### storage
 
-### device-management  
-Bootstrap Windows machines with Winget installs, trigger Defender scans or other endpoint-management tasks.
+Scripts to connect, join, and test Azure Storage accounts with Active Directory:
 
-### utilities  
-General-purpose functions for PowerShell workflows: list/string conversion, HTML parsing, object flattening, path helpers, etc.
+| Script | Description |
+|---|---|
+| `Join-AzStorageAccount.ps1` | Joins an Azure Storage account to an on-premises AD domain (AD-DS). Depends on AzFilesHybrid. |
+| `Test-AzStorageConnection.ps1` | Validates connectivity to a specified Azure Storage account and file share endpoints. |
+| `CopyToPSPath.ps1` | Copies AzFilesHybrid module files into a path in `$env:PSModulePath`. Run before `Join-AzStorageAccount.ps1`. |
+| `AzFilesHybrid.psm1` | Microsoft AzFilesHybrid module — enables AD-based authentication for Azure Files. |
+
+### monitoring
+
+Scripts for log management and health checks:
+
+| Script | Description |
+|---|---|
+| `Purge-AzLogData.ps1` | Purges old data from a Log Analytics workspace table by time range and table name. |
+
+### governance
+
+Enforce tagging, audit roles, and manage policy compliance:
+
+| Script | Description |
+|---|---|
+| `Apply-TagToRGResources.ps1` | Applies a set of tags to all resources within one or more resource groups. |
+| `Create-PolicyTagEnforcement.ps1` | Creates and assigns an Azure Policy initiative that enforces required tags on resources. |
+| `Get-SpnRoleAssignments.ps1` | Exports all RBAC role assignments for Service Principals across one or more subscriptions. |
+
+### utilities
+
+General-purpose scripts for Azure administration tasks:
+
+| Script | Description |
+|---|---|
+| `Get-CustomRoles.ps1` | Searches for custom RBAC role definitions across all subscriptions or a specific one. Supports pattern filtering and CSV export. |
+| `Get-WsusRolesPerVm.ps1` | Detects whether the WSUS Server Role is installed on running Windows VMs using Azure RunCommand. |
 
 ## How to Add a New Script
 
-1. **Pick a category** above or propose a new one if none fits.  
-2. **Place your script** in the matching folder.  
-3. **Name it clearly**, e.g. `Set-ResourceGroupTags.ps1` or `Export-AzCostReport.ps1`.  
-4. **Include a Top-of-File Comment Block**:
-```powershell
+1. **Pick a category** above or propose a new one if none fits.
+2. **Place your script** in the matching folder.
+3. **Name it clearly**, using PowerShell `Verb-Noun` convention, e.g. `Set-ResourceGroupTags.ps1`.
+4. **Include a header comment block**:
+   ```powershell
    <#
      .SYNOPSIS
        One-line summary of what this script does.
-
      .DESCRIPTION
        Detailed explanation, parameters, and example usage.
+     .PARAMETER ParameterName
+       Description of the parameter.
+     .EXAMPLE
+       .\MyScript.ps1 -ParameterName "value"
    #>
-```
-5. Update this README: add your script filename under its category with a one-sentence description.
-
-
+   ```
+5. **Update this README**: add your script filename under its category with a one-sentence description.

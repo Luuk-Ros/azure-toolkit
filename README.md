@@ -81,7 +81,6 @@ scripts/
 ├─ storage/             Azure Files AD-DS integration & storage helpers
 ├─ monitoring/          Log purges & health checks
 ├─ governance/          Tagging, RBAC/SPN reporting & policy enforcement
-├─ device-management/   Windows/Intune/Winget provisioning & scans
 └─ utilities/           General-purpose helper scripts
 ```
 
@@ -98,7 +97,7 @@ scripts/
 |---|---|
 | `Join-AzStorageAccount.ps1` | Joins an Azure Storage account to an on-premises Active Directory domain (AD-DS). |
 | `Test-AzStorageConnection.ps1` | Validates connectivity and authentication to an Azure Files share. |
-| `CopyToPSPath.ps1` | Copies files to a path accessible via PowerShell, with retry logic and error handling. |
+| `CopyToPSPath.ps1` | Copies the AzFilesHybrid module files into a path listed in `$env:PSModulePath`. |
 | `AzFilesHybrid.psm1` | Microsoft AzFilesHybrid module — enables Active Directory authentication for Azure Files. |
 
 ### monitoring
@@ -119,8 +118,8 @@ scripts/
 
 | Script | Description |
 |---|---|
-| `getCustomRoles.ps1` | Lists all custom RBAC role definitions in a subscription or management group. |
-| `getWsusRolesPerVm.ps1` | Retrieves WSUS update roles and patch status per VM from Azure Update Manager. |
+| `Get-CustomRoles.ps1` | Searches for custom RBAC role definitions across all subscriptions or a specific one. Supports pattern filtering and CSV export. |
+| `Get-WsusRolesPerVm.ps1` | Detects whether the WSUS Server Role is installed on running Windows VMs using Azure RunCommand. |
 
 ---
 
