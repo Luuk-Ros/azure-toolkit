@@ -33,17 +33,19 @@
 # Configuration
 $TenantId = "<tenant-id-here>"
 $SearchPattern = "*<role-name-pattern>*"
-$SubscriptionId = "<your-subscription-id-here>"
+$SubscriptionId = "" # Optional: set to a specific subscription ID, or leave empty to search all enabled subscriptions
 
 # Authenticate met device code
 Write-Host "*** Connecting to Azure with Device Code ***" -ForegroundColor Cyan
-Connect-AzAccount -TenantId $TenantId -SubscriptionId $SubscriptionId -ErrorAction Stop | Out-Null
-Set-AzContext -SubscriptionId $SubscriptionId | Out-Null
+Connect-AzAccount -TenantId $TenantId -ErrorAction Stop | Out-Null
+if ($SubscriptionId) {
+    Set-AzContext -SubscriptionId $SubscriptionId -ErrorAction Stop | Out-Null
+}
 
 # Determine which subscriptions to search
-if ($TargetSubscriptionId) {
-    Write-Host "*** Searching in specific subscription: $TargetSubscriptionId ***" -ForegroundColor Cyan
-    $subscriptions = @(Get-AzSubscription -SubscriptionId $TargetSubscriptionId)
+if ($SubscriptionId) {
+    Write-Host "*** Searching in specific subscription: $SubscriptionId ***" -ForegroundColor Cyan
+    $subscriptions = @(Get-AzSubscription -SubscriptionId $SubscriptionId)
 } else {
     Write-Host "*** Retrieving all accessible subscriptions ***" -ForegroundColor Cyan
     $subscriptions = Get-AzSubscription | Where-Object { $_.State -eq 'Enabled' }
@@ -51,7 +53,7 @@ if ($TargetSubscriptionId) {
 }
 
 # Search for custom roles
-$foundRoles = @()
+$foundRoles = [System.Collections.Generic.List[object]]::new()
 
 foreach ($sub in $subscriptions) {
     Write-Host "`n*** Checking subscription: $($sub.Name) ($($sub.Id)) ***" -ForegroundColor Yellow
@@ -59,24 +61,23 @@ foreach ($sub in $subscriptions) {
     try {
         Set-AzContext -SubscriptionId $sub.Id -ErrorAction Stop | Out-Null
         
-        # Get all custom roles in this subscription
-        $customRoles = Get-AzRoleDefinition | Where-Object { 
-            $_.IsCustom -eq $true -and 
-            $_.Name -like $SearchPattern 
+        # Get custom roles in this subscription
+        $customRoles = Get-AzRoleDefinition -Custom | Where-Object {
+            $_.Name -like $SearchPattern
         }
         
         if ($customRoles.Count -gt 0) {
             Write-Host "✔ Found $($customRoles.Count) matching custom role(s)" -ForegroundColor Green
             
             foreach ($role in $customRoles) {
-                $foundRoles += [PSCustomObject]@{
+                $foundRoles.Add([PSCustomObject]@{
                     SubscriptionName = $sub.Name
                     SubscriptionId   = $sub.Id
                     RoleName         = $role.Name
                     RoleId           = $role.Id
                     Description      = $role.Description
                     AssignableScopes = $role.AssignableScopes -join "; "
-                }
+                }) | Out-Null
                 
                 Write-Host "  → Role: $($role.Name)" -ForegroundColor Cyan
                 Write-Host "    ID: $($role.Id)" -ForegroundColor Gray
